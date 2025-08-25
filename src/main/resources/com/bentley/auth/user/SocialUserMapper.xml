@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bentley.auth.user.SocialUserMapper">
+    <resultMap id="socialUserResultMap" type="com.bentley.auth.user.SocialUser" autoMapping="true">
+        <id column="id" property="id" />
+    </resultMap>
+
+    <insert id="insert" parameterType="com.bentley.auth.user.SocialUser" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
+        INSERT INTO socialUser(userId, registrationId, subject, createdAt, updatedAt)
+        VALUES (#{userId}, #{registrationId}, #{subject}, #{createdAt}, #{updatedAt})
+    </insert>
+
+    <select id="findByRegistrationIdAndSubject" resultMap="socialUserResultMap">
+        SELECT *
+        FROM socialUser
+        WHERE registrationId = #{registrationId}
+          AND subject = #{subject}
+    </select>
+</mapper>

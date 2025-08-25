@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bentley.auth.user.RefreshTokenMapper">
+    <resultMap id="refreshTokenResultMap" type="com.bentley.auth.user.RefreshToken" autoMapping="true">
+        <id column="id" property="id" />
+    </resultMap>
+
+    <insert id="insert" parameterType="com.bentley.auth.user.RefreshToken" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
+        INSERT INTO refreshToken(userId, token, expiresAt, createdAt, updatedAt)
+        VALUES (#{userId}, #{token}, #{expiresAt}, #{createdAt}, #{updatedAt})
+    </insert>
+
+    <delete id="deleteByUserIdAndToken">
+        DELETE FROM refreshToken
+        WHERE userId = #{userId} AND token = #{token}
+    </delete>
+</mapper>

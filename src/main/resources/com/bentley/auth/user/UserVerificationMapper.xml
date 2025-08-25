@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bentley.auth.user.UserVerificationMapper">
+    <resultMap id="userVerificationResultMap" type="com.bentley.auth.user.UserVerification" autoMapping="true">
+        <id column="id" property="id" />
+    </resultMap>
+
+    <insert id="insert" parameterType="com.bentley.auth.user.UserVerification" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
+        INSERT INTO userVerification(userId, code, verifiedAt, expiresAt, createdAt, updatedAt)
+        VALUES (#{userId}, #{code}, #{verifiedAt}, #{expiresAt}, #{createdAt}, #{updatedAt})
+    </insert>
+
+    <update id="update" parameterType="com.bentley.auth.user.UserVerification">
+        UPDATE userVerification
+        SET
+            code = #{code},
+            verifiedAt = #{verifiedAt},
+            updatedAt = #{updatedAt}
+        WHERE id = #{id}
+    </update>
+
+    <select id="findByUserIdAndCode" resultMap="userVerificationResultMap">
+        SELECT *
+        FROM userVerification
+        WHERE
+            userId = #{userId}
+            AND code = #{code}
+    </select>
+</mapper>

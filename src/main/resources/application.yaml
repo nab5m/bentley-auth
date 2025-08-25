@@ -1,0 +1,52 @@
+spring:
+  application:
+    name: bentley-auth
+  datasource:
+    url: jdbc:mysql://localhost:3309/test?allowMultiQueries=true
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: test
+    password: test
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ""
+    password: ""
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${GOOGLE_CLIENT_ID}
+            client-secret: ${GOOGLE_CLIENT_SECRET}
+            redirect-uri: http://localhost:8080/v1/oauth2/google/login # authorization code랑 state 확인용
+            scope:
+              - openid
+              - profile
+              - email
+          kakao:
+            client-id: ${KAKAO_CLIENT_ID}
+            client-secret: ${KAKAO_CLIENT_SECRET}
+            redirect-uri: http://localhost:8080/v1/oauth2/kakao/login # authorization code랑 state 확인용
+            scope:
+              - profile_nickname
+              - profile_image
+              - account_email
+
+jwt:
+  public-key: "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEApiZnwNlBNfBqN/T8NGDpvEMgn7m4ZZ9XnwwCsMvhHcBpzEJ4hkQSCD3ahUo5SHZfJzLaY1wf4J3DzG6hqJLR0escibAKJGpVmUkSkfEP5v1Lw9GHJmRmzZ6JGdKD92LCaMAldaxvTY+uC2Swf73pAFDfIqqf+r9GdrClTKulBV87FBqymRSx9hp4u+fCMyvidiAbRaJxtC7YKBHGIcQpIbryBPOQlmKrH0pYSu049JY0L0zyQ8yxTiKzKbMbY7WPcN7FLwj1G64nmSxSqVcCCT1h6TPLV6kThyX1YtCNms2DWoNiEvxPkwjUOTwwnvIFtkCKTa6E6n5JvPzhdlUYhQIDAQAB"
+  private-key: "MIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQCmJmfA2UE18Go39Pw0YOm8QyCfubhln1efDAKwy+EdwGnMQniGRBIIPdqFSjlIdl8nMtpjXB/gncPMbqGoktHR6xyJsAokalWZSRKR8Q/m/UvD0YcmZGbNnokZ0oP3YsJowCV1rG9Nj64LZLB/vekAUN8iqp/6v0Z2sKVMq6UFXzsUGrKZFLH2Gni758IzK+J2IBtFonG0LtgoEcYhxCkhuvIE85CWYqsfSlhK7Tj0ljQvTPJDzLFOIrMpsxtjtY9w3sUvCPUbrieZLFKpVwIJPWHpM8tXqROHJfVi0I2azYNag2IS/E+TCNQ5PDCe8gW2QIpNroTqfkm8/OF2VRiFAgMBAAECggEABn+/FDSLT/RQ+1JaYSQfUG1hw82scFEsyLxcCJVY/2Rs3wAEnd/gwrDEsO0H05VJwItFLpjGaG9TXtY+/YyMp4TmT15y7xy3r3DDyLCguhzTT1wNSMupl8ZpP3jUD6OtzhIiBPnTOrnxiWGNY9nGWOxQ5ha9fj3oIDFlrduS72RLkvgzPb+z4S6J2NQX+Sfx0J8fh/N+HsU5hdeqipiuNcJNSuNaZwT9D6k+G78tRUv+hfJzi9hS9+ldqOaQZm+ONqeKIyvrNkPscCZ9NqXNcF8O1L6PLH5s1nBv0eamSSRkoEGT2D5pRXq+yByRXx3icyLM43cxEpohbVMOO3z3WwKBgQDVaZva69Ccp2kssBqcfQ9kLAsg7HOsSZ66TaNBPEGMSOsgmUB+A3L/vsd4ZyR/sw6AW1nGYAZkkR0EgbwbGnz4XlMMrfS7gCeEC+E1fi+GKV59827Z6snvtLvt4wSh7LAks9Ywi3rp+BLZW1bQuPDwZPkTsfMXy10XgiXf8YNcFwKBgQDHTlgTDP2d4dl9Pf0aAJ4edrojCQo2yPMNUbMjDdU4FzmrDdz8d4jaGSDhsDneAiPoKYkRMlSGIuZEn9qCjtSP3H6PPVDnWgCAfhJOI1A4Mxtv/QU2oBd60QnihBf/eVGr4W0FaFKPNZkH6ct2MxLAoZgmiowv4D7NhaOrocKFwwKBgBi/loNctWR1RY0ZHvzmw9IqCWBYC1H/d5jDSBtYkYFjM2EkZIY4gC2IQjmEPIdSjGv2LAMFP7iJ24OaR+YcvEFRLvBZe/gCdJKrjgJWD8zPH1Yb1M8QmzphCyobGX5tpD+dW0ll42seiZELNpYd3FMEYp4WFMq9mp4PSbUenM0hAoGASlvFal4nZTc1EJAHFSNz2sPLEHU39Valr6tynTp0+XdY0aPbdeoXCd/kL6+y90xvHxgYBm1zsZPlu2a0fI9TaNUH9uMWgypGE6p1o+dy73TJ4M9SmZ3DBNRmzrcfyPX3bZwuM51HaBzEGnq0qUXG0k232XFJejc81yrr9IXmcEcCgYAfPPy06B73EEkcCx79ro4kSpKdXfThirHrL0gyKpTqv7m+wL8B1P0ZJN/7Yx33vUyKfhgluS44ljqP9Uyjoksuv2//34+tyOu0j7yrZE7fIMCIl4OvtUiSTj9FjxaReLXlJTD7i+XxdgWifHbGEyZWl3BqT1TWWaNcAyru7zAoTw=="
+
+logging:
+  level:
+    org.springframework.web: DEBUG
+    org.springframework.web.filter.CommonsRequestLoggingFilter: DEBUG
+    org.mybatis: DEBUG
+    jdbc.sqlonly: DEBUG
+    jdbc.sqltiming: DEBUG
+    jdbc.audit: DEBUG

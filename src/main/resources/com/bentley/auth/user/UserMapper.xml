@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bentley.auth.user.UserMapper">
+    <resultMap id="userResultMap" type="com.bentley.auth.user.User" autoMapping="true">
+        <id property="id" column="id"/>
+    </resultMap>
+
+    <insert id="insert" parameterType="com.bentley.auth.user.User" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
+        INSERT INTO `user` (email, password, phone, firstName, lastName, status, createdAt, updatedAt, deactivatedAt)
+        VALUES (#{email}, #{password}, #{phone}, #{firstName}, #{lastName}, #{status}, #{createdAt}, #{updatedAt}, #{deactivatedAt})
+    </insert>
+
+    <update id="update" parameterType="com.bentley.auth.user.User">
+        UPDATE `user`
+        SET password      = #{password},
+            status        = #{status},
+            updatedAt     = #{updatedAt},
+            deactivatedAt = #{deactivatedAt}
+        WHERE id = #{id}
+    </update>
+
+    <select id="findById" parameterType="long" resultMap="userResultMap">
+        SELECT *
+        FROM `user`
+        WHERE id = #{id}
+    </select>
+
+    <select id="findByEmail" parameterType="string" resultMap="userResultMap">
+        SELECT *
+        FROM `user`
+        WHERE email = #{email}
+    </select>
+</mapper>
