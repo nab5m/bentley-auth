@@ -1,6 +1,5 @@
 package com.bentley.auth.user
 
-import com.bentley.auth.core.JwtService
 import org.springframework.security.oauth2.client.endpoint.RestClientAuthorizationCodeTokenResponseClient
 import org.springframework.security.oauth2.client.endpoint.OAuth2AuthorizationCodeGrantRequest
 import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserRequest
@@ -22,7 +21,6 @@ import java.time.Instant
 @Service
 class OAuth2ClientService(
     private val clientRegistrationRepository: ClientRegistrationRepository,
-    private val jwtService: JwtService,
 ) {
     fun exchange(registrationId: String, authorizationCode: String, state: String?): OAuth2AccessTokenResponse {
         val client = clientRegistrationRepository.findByRegistrationId(registrationId)
