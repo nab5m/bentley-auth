@@ -44,23 +44,23 @@ class JwtService {
             .verify(token)
     }
 
-    fun generateAccessToken(userId: Long, email: String): Token {
+    fun generateAccessToken(userId: Long): Token {
         val now = Clock.systemDefaultZone().instant()
         val expiresAt = now.plusSeconds(3600L) // 1 hour
 
-        val token = generateToken(userId, email, now, expiresAt)
+        val token = generateToken(userId, now, expiresAt)
         return Token(token, expiresAt)
     }
 
-    fun generateRefreshToken(userId: Long, email: String): Token {
+    fun generateRefreshToken(userId: Long): Token {
         val now = Clock.systemDefaultZone().instant()
         val expiresAt = now.plusSeconds(2592000L)   // 30 days
 
-        val token = generateToken(userId, email, now, expiresAt)
+        val token = generateToken(userId, now, expiresAt)
         return Token(token, expiresAt)
     }
 
-    private fun generateToken(userId: Long, email: String, now: Instant, expiresAt: Instant): String {
+    private fun generateToken(userId: Long, now: Instant, expiresAt: Instant): String {
         val keyFactory = KeyFactory.getInstance("RSA")
         val publicKey =
             keyFactory.generatePublic(X509EncodedKeySpec(Base64.getDecoder().decode(publicKeyContent))) as RSAPublicKey
@@ -75,7 +75,6 @@ class JwtService {
             .withIssuer(ISSUER)
             .withIssuedAt(now)
             .withExpiresAt(expiresAt)
-            .withClaim("email", email)
             .sign(Algorithm.RSA256(publicKey, privateKey))
     }
 }

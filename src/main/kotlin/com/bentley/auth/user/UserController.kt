@@ -4,6 +4,7 @@ import com.bentley.auth.JwtService
 import com.bentley.auth.OAuth2ClientService
 import com.bentley.auth.RefreshToken
 import com.bentley.auth.RefreshTokenService
+import com.bentley.auth.TokenResponse
 import io.swagger.v3.oas.annotations.Operation
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
@@ -90,14 +91,7 @@ class UserController(
         val password: String,
     )
 
-    data class TokenResponse(
-        val accessToken: String,
-        val accessTokenExpiresAt: Instant,
-        val refreshToken: String,
-        val refreshTokenExpiresAt: Instant,
-    )
-
-    @PostMapping("/v1/login")
+    @PostMapping("/v1/user/login")
     @Operation(summary = "로그인")
     fun login(@RequestBody request: LoginRequest): TokenResponse {
         val user = userService.getOrNullByEmail(request.email).takeIf { it?.status == User.Status.ACTIVE }
@@ -108,37 +102,6 @@ class UserController(
         }
 
         return generateTokenResponse(user)
-    }
-
-    data class RefreshTokenRequest(
-        val refreshToken: String,
-    )
-
-    @PostMapping("/v1/refresh-token")
-    @Operation(summary = "토큰 재발급")
-    fun refreshToken(@RequestBody request: RefreshTokenRequest): TokenResponse {
-        val decodedJwt = jwtService.verify(request.refreshToken)
-        val userId = decodedJwt.subject.toLong()
-        val user = userService.get(userId)
-
-        val accessToken = jwtService.generateAccessToken(userId, user.email)
-
-        return TokenResponse(
-            accessToken = accessToken.token,
-            accessTokenExpiresAt = accessToken.expiresAt,
-            refreshToken = request.refreshToken,
-            refreshTokenExpiresAt = decodedJwt.expiresAt.toInstant(),
-        )
-    }
-
-    data class LogoutRequest(
-        val refreshToken: String,
-    )
-
-    @PostMapping("/v1/logout")
-    fun logout(@RequestBody logoutRequest: LogoutRequest) {
-        val decodedJwt = jwtService.verify(logoutRequest.refreshToken)
-        refreshTokenService.delete(decodedJwt.subject.toLong(), logoutRequest.refreshToken) // TODO: subject를 userId로 쓰는게 좋은건 아닌 듯. 명확하게 claim에 key-value로 저장하는게 나을 듯
     }
 
     @GetMapping("/v1/user/me")
@@ -186,7 +149,7 @@ class UserController(
         val state: String?, // oauth2 state (optional)
     )
 
-    @PostMapping("/v1/oauth2/{registrationId}/login")
+    @PostMapping("/v1/user/oauth2/{registrationId}/login")
     @Operation(summary = "OAuth2 로그인")
     fun oauth2Login(
         @PathVariable registrationId: String,
@@ -230,8 +193,8 @@ class UserController(
     }
 
     private fun generateTokenResponse(user: User): TokenResponse {
-        val accessToken = jwtService.generateAccessToken(user.id, user.email)
-        val refreshToken = jwtService.generateRefreshToken(user.id, user.email)
+        val accessToken = jwtService.generateAccessToken(user.id)
+        val refreshToken = jwtService.generateRefreshToken(user.id)
 
         refreshTokenService.create(
             RefreshToken(
