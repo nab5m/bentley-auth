@@ -1,6 +1,9 @@
 package com.bentley.auth.user
 
 import com.bentley.auth.JwtService
+import com.bentley.auth.OAuth2ClientService
+import com.bentley.auth.RefreshToken
+import com.bentley.auth.RefreshTokenService
 import io.swagger.v3.oas.annotations.Operation
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus

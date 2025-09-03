@@ -1,4 +1,4 @@
-package com.bentley.auth.user
+package com.bentley.auth
 
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach

@@ -1,4 +1,4 @@
-package com.bentley.auth.user
+package com.bentley.auth
 
 import org.springframework.stereotype.Service
 

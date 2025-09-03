@@ -1,4 +1,4 @@
-package com.bentley.auth.user
+package com.bentley.auth
 
 import com.bentley.core.Entity
 import java.time.LocalDateTime

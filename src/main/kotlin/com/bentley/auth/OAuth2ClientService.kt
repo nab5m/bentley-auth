@@ -1,4 +1,4 @@
-package com.bentley.auth.user
+package com.bentley.auth
 
 import org.springframework.security.oauth2.client.endpoint.RestClientAuthorizationCodeTokenResponseClient
 import org.springframework.security.oauth2.client.endpoint.OAuth2AuthorizationCodeGrantRequest
