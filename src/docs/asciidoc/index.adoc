@@ -6,8 +6,12 @@
 :revdate: {localdate}
 :source-highlighter: highlightjs
 
-== Index
+== User API
 
 :title: [POST] /v1/user
 :op: user-create
+include::src/docs/asciidoc/templates/operation.adoc[]
+
+:title: [POST] /v1/login
+:op: login
 include::src/docs/asciidoc/templates/operation.adoc[]

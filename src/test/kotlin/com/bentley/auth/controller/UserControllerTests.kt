@@ -4,6 +4,7 @@ import com.bentley.auth.core.JwtService
 import com.bentley.auth.user.OAuth2ClientService
 import com.bentley.auth.user.RefreshTokenService
 import com.bentley.auth.user.SocialUserService
+import com.bentley.auth.user.User
 import com.bentley.auth.user.UserService
 import com.bentley.auth.user.UserVerificationMailService
 import com.bentley.auth.user.UserVerificationService
@@ -16,19 +17,26 @@ import org.springframework.context.annotation.Import
 import org.springframework.http.MediaType
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post
+import org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse
+import org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint
 import org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath
 import org.springframework.restdocs.payload.PayloadDocumentation.requestFields
-import org.springframework.restdocs.request.RequestDocumentation.formParameters
-import org.springframework.restdocs.request.RequestDocumentation.parameterWithName
+import org.springframework.restdocs.payload.PayloadDocumentation.responseFields
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.test.context.bean.override.mockito.MockitoBean
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers.print
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import java.time.Instant
+import java.util.UUID.randomUUID
 import kotlin.test.Test
 
 @WebMvcTest(controllers = [UserController::class])
-@AutoConfigureRestDocs
+@AutoConfigureRestDocs(
+    uriScheme = "https",
+    uriHost = "auth.bentley.com",
+    uriPort = 443,
+)
 @Import(TestSecurityConfig::class)
 class UserControllerTests @Autowired constructor(
     private val mockMvc: MockMvc,
@@ -80,12 +88,68 @@ class UserControllerTests @Autowired constructor(
             .andDo(
                 document(
                     "user-create",
+                    preprocessResponse(prettyPrint()),
                     requestFields(
-                        fieldWithPath("email").description("User email"),
-                        fieldWithPath("password").description("password"),
+                        fieldWithPath("email").description("User email, required"),
+                        fieldWithPath("password").description("password, required"),
                         fieldWithPath("phone").description("phone").optional(),
                         fieldWithPath("firstName").description("firstName").optional(),
                         fieldWithPath("lastName").description("lastName").optional(),
+                    )
+                )
+            )
+    }
+
+    @Test
+    fun login() {
+        val email = "bentley.kim@handys.co.kr"
+        val password = "password123"
+        val user = User(
+            email = email,
+            password = "encodedPassword",
+            phone = null,
+            firstName = "JunYoung",
+            lastName = "Kim",
+            status = User.Status.ACTIVE,
+            deactivatedAt = null,
+        )
+        user.id = 1L
+        val accessToken = randomUUID().toString()
+        val accessTokenExpiredAt = Instant.now().plusSeconds(3600)
+        val refreshToken = randomUUID().toString()
+        val refreshTokenExpiredAt = Instant.now().plusSeconds(2592000)
+        doReturn(user).`when`(userService).getOrNullByEmail(email)
+        doReturn(true).`when`(passwordEncoder).matches(password, user.password)
+        doReturn(JwtService.Token(accessToken, accessTokenExpiredAt)).`when`(jwtService)
+            .generateAccessToken(user.id, user.email)
+        doReturn(JwtService.Token(refreshToken, refreshTokenExpiredAt)).`when`(jwtService)
+            .generateRefreshToken(user.id, user.email)
+
+        mockMvc.perform(
+            post("/v1/login").contentType(MediaType.APPLICATION_JSON)
+                .content(
+                    """
+                    {
+                        "email": "$email",
+                        "password": "$password"
+                    }
+                """.trimIndent()
+                )
+        ).andExpect(status().isOk)
+            .andDo(print())
+            .andDo(
+                document(
+                    "login",
+                    preprocessResponse(prettyPrint()),
+                    requestFields(
+                        fieldWithPath("email").description("User email, required"),
+                        fieldWithPath("password").description("password, required"),
+                    ),
+                    responseFields(
+                        fieldWithPath("accessToken").description("accessToken"),
+                        fieldWithPath("accessTokenExpiresAt").description("accessTokenExpiresAt"),
+                        fieldWithPath("refreshToken").description("refreshToken"),
+                        fieldWithPath("refreshTokenExpiresAt").description("refreshTokenExpiresAt"),
                     )
                 )
             )
