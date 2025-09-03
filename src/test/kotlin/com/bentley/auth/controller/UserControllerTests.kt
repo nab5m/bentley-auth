@@ -1,13 +1,7 @@
 package com.bentley.auth.controller
 
 import com.bentley.auth.core.JwtService
-import com.bentley.auth.user.OAuth2ClientService
-import com.bentley.auth.user.RefreshTokenService
-import com.bentley.auth.user.SocialUserService
-import com.bentley.auth.user.User
-import com.bentley.auth.user.UserService
-import com.bentley.auth.user.UserVerificationMailService
-import com.bentley.auth.user.UserVerificationService
+import com.bentley.auth.user.*
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.doReturn
 import org.springframework.beans.factory.annotation.Autowired
@@ -15,13 +9,12 @@ import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDoc
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.context.annotation.Import
 import org.springframework.http.MediaType
+import org.springframework.restdocs.constraints.ConstraintDescriptions
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post
 import org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse
 import org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint
-import org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath
-import org.springframework.restdocs.payload.PayloadDocumentation.requestFields
-import org.springframework.restdocs.payload.PayloadDocumentation.responseFields
+import org.springframework.restdocs.payload.PayloadDocumentation.*
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.test.context.bean.override.mockito.MockitoBean
 import org.springframework.test.web.servlet.MockMvc
@@ -30,6 +23,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import java.time.Instant
 import java.util.UUID.randomUUID
 import kotlin.test.Test
+
 
 @WebMvcTest(controllers = [UserController::class])
 @AutoConfigureRestDocs(
@@ -70,6 +64,8 @@ class UserControllerTests @Autowired constructor(
     fun createUser() {
         doReturn("encodedPassword").`when`(passwordEncoder).encode(any())
 
+        val userConstraints = ConstraintDescriptions(User::class.java)
+
         mockMvc.perform(
             post("/v1/user").contentType(MediaType.APPLICATION_JSON).content(
                 """
@@ -90,8 +86,8 @@ class UserControllerTests @Autowired constructor(
                     "user-create",
                     preprocessResponse(prettyPrint()),
                     requestFields(
-                        fieldWithPath("email").description("User email, required"),
-                        fieldWithPath("password").description("password, required"),
+                        fieldWithPath("email").description(userConstraints.descriptionsForProperty("email").joinToString(", ")),
+                        fieldWithPath("password").description(userConstraints.descriptionsForProperty("password").joinToString(", ")),
                         fieldWithPath("phone").description("phone").optional(),
                         fieldWithPath("firstName").description("firstName").optional(),
                         fieldWithPath("lastName").description("lastName").optional(),

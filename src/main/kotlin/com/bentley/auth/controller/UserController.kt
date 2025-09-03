@@ -11,6 +11,7 @@ import com.bentley.auth.user.UserService
 import com.bentley.auth.user.UserVerificationMailService
 import com.bentley.auth.user.UserVerificationService
 import io.swagger.v3.oas.annotations.Operation
+import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.security.crypto.password.PasswordEncoder
@@ -40,7 +41,7 @@ class UserController(
 
     @PostMapping("/v1/user")
     @Operation(summary = "이메일 회원가입")
-    fun createUser(@RequestBody user: User) {
+    fun createUser(@RequestBody @Valid user: User) {
         val existingUser = userService.getOrNullByEmail(user.email)
         if (existingUser != null) {
             throw ResponseStatusException(HttpStatus.BAD_REQUEST, "User with email ${user.email} already exists")
