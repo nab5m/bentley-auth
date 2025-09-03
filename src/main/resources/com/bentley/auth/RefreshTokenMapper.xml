@@ -6,12 +6,12 @@
     </resultMap>
 
     <insert id="insert" parameterType="com.bentley.auth.RefreshToken" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
-        INSERT INTO refreshToken(userId, token, expiresAt, createdAt, updatedAt)
-        VALUES (#{userId}, #{token}, #{expiresAt}, #{createdAt}, #{updatedAt})
+        INSERT INTO refreshToken(userType, userId, token, expiresAt, createdAt, updatedAt)
+        VALUES (#{userType}, #{userId}, #{token}, #{expiresAt}, #{createdAt}, #{updatedAt})
     </insert>
 
-    <delete id="deleteByUserIdAndToken">
+    <delete id="deleteByUserTypeAndUserIdAndToken">
         DELETE FROM refreshToken
-        WHERE userId = #{userId} AND token = #{token}
+        WHERE userType = #{userType} AND userId = #{userId} AND token = #{token}
     </delete>
 </mapper>

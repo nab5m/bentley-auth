@@ -28,13 +28,14 @@ CREATE TABLE IF NOT EXISTS `userVerification`
 
 CREATE TABLE IF NOT EXISTS `refreshToken`
 (
-    id        BIGINT   NOT NULL PRIMARY KEY AUTO_INCREMENT,
-    userId    BIGINT   NOT NULL,
-    token     TEXT     NOT NULL,
-    expiresAt DATETIME NOT NULL,
-    createdAt DATETIME NOT NULL,
-    updatedAt DATETIME NOT NULL,
-    FOREIGN KEY (userId) REFERENCES `user` (id)
+    id        BIGINT      NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    userType  VARCHAR(64) NOT NULL,
+    userId    BIGINT      NOT NULL,
+    token     TEXT        NOT NULL,
+    expiresAt DATETIME    NOT NULL,
+    createdAt DATETIME    NOT NULL,
+    updatedAt DATETIME    NOT NULL,
+    INDEX (userType, userId)
 );
 
 CREATE TABLE IF NOT EXISTS `socialUser`

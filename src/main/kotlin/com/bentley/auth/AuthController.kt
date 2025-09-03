@@ -20,9 +20,10 @@ class AuthController(
     @Operation(summary = "토큰 재발급")
     fun refreshToken(@RequestBody request: RefreshTokenRequest): TokenResponse {
         val decodedJwt = jwtService.verify(request.refreshToken)
-        val userId = decodedJwt.subject.toLong()
+        val userType = decodedJwt.claims["userType"]?.toString() ?: throw IllegalArgumentException("Invalid token: missing userType claim")
+        val userId = decodedJwt.claims["userId"]?.asLong() ?: throw IllegalArgumentException("Invalid token: missing userId claim")
 
-        val accessToken = jwtService.generateAccessToken(userId)
+        val accessToken = jwtService.generateAccessToken(UserType.valueOf(userType), userId)
 
         return TokenResponse(
             accessToken = accessToken.token,
@@ -39,6 +40,9 @@ class AuthController(
     @DeleteMapping("/v1/refresh-token")
     fun logout(@RequestBody logoutRequest: LogoutRequest) {
         val decodedJwt = jwtService.verify(logoutRequest.refreshToken)
-        refreshTokenService.delete(decodedJwt.subject.toLong(), logoutRequest.refreshToken) // TODO: subject를 userId로 쓰는게 좋은건 아닌 듯. 명확하게 claim에 key-value로 저장하는게 나을 듯
+        val userType = decodedJwt.claims["userType"]?.toString() ?: throw IllegalArgumentException("Invalid token: missing userType claim")
+        val userId = decodedJwt.claims["userId"]?.asLong() ?: throw IllegalArgumentException("Invalid token: missing userId claim")
+
+        refreshTokenService.delete(UserType.valueOf(userType), userId, logoutRequest.refreshToken)
     }
 }

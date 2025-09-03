@@ -18,6 +18,7 @@ class RefreshTokenMapperTests {
     @BeforeEach
     fun setup() {
         testRefreshToken = RefreshToken(
+            userType = UserType.USER,
             userId = 1L,
             token = "testRefreshToken123",
             expiresAt = LocalDateTime.now().plusDays(30),
@@ -32,7 +33,7 @@ class RefreshTokenMapperTests {
 
     @Test
     fun `test deleteByToken`() {
-        val rowsDeleted = refreshTokenMapper.deleteByUserIdAndToken(testRefreshToken.userId, testRefreshToken.token)
+        val rowsDeleted = refreshTokenMapper.deleteByUserTypeAndUserIdAndToken(testRefreshToken.userType, testRefreshToken.userId, testRefreshToken.token)
         Assertions.assertEquals(1, rowsDeleted)
     }
 }

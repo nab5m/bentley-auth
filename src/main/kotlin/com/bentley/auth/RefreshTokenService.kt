@@ -11,7 +11,7 @@ class RefreshTokenService(
         refreshTokenMapper.insert(refreshToken)
     }
 
-    fun delete(userId: Long, token: String) {
-        refreshTokenMapper.deleteByUserIdAndToken(userId, token)
+    fun delete(userType: UserType, userId: Long, token: String) {
+        refreshTokenMapper.deleteByUserTypeAndUserIdAndToken(userType, userId, token)
     }
 }

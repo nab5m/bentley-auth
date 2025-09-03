@@ -4,6 +4,7 @@ import com.bentley.auth.JwtService
 import com.bentley.auth.OAuth2ClientService
 import com.bentley.auth.RefreshTokenService
 import com.bentley.auth.TestSecurityConfig
+import com.bentley.auth.UserType
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito
 import org.springframework.beans.factory.annotation.Autowired
@@ -119,9 +120,9 @@ class UserControllerTests @Autowired constructor(
         Mockito.doReturn(user).`when`(userService).getOrNullByEmail(email)
         Mockito.doReturn(true).`when`(passwordEncoder).matches(password, user.password)
         Mockito.doReturn(JwtService.Token(accessToken, accessTokenExpiredAt)).`when`(jwtService)
-            .generateAccessToken(user.id)
+            .generateAccessToken(UserType.USER, user.id)
         Mockito.doReturn(JwtService.Token(refreshToken, refreshTokenExpiredAt)).`when`(jwtService)
-            .generateRefreshToken(user.id)
+            .generateRefreshToken(UserType.USER, user.id)
 
         mockMvc.perform(
             RestDocumentationRequestBuilders.post("/v1/user/login").contentType(MediaType.APPLICATION_JSON)

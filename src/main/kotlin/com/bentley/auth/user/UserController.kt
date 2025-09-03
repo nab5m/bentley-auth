@@ -5,6 +5,7 @@ import com.bentley.auth.OAuth2ClientService
 import com.bentley.auth.RefreshToken
 import com.bentley.auth.RefreshTokenService
 import com.bentley.auth.TokenResponse
+import com.bentley.auth.UserType
 import io.swagger.v3.oas.annotations.Operation
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
@@ -193,11 +194,12 @@ class UserController(
     }
 
     private fun generateTokenResponse(user: User): TokenResponse {
-        val accessToken = jwtService.generateAccessToken(user.id)
-        val refreshToken = jwtService.generateRefreshToken(user.id)
+        val accessToken = jwtService.generateAccessToken(UserType.USER, user.id)
+        val refreshToken = jwtService.generateRefreshToken(UserType.USER, user.id)
 
         refreshTokenService.create(
             RefreshToken(
+                userType = UserType.USER,
                 userId = user.id,
                 token = refreshToken.token,
                 expiresAt = LocalDateTime.ofInstant(refreshToken.expiresAt, ZoneId.systemDefault())
