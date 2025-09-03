@@ -1,11 +1,13 @@
-package com.bentley.auth
+package com.bentley
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
+import org.springframework.modulith.Modulith
 
+@Modulith
 @SpringBootApplication
-class AuthApplication
+class BentleyApplication
 
 fun main(args: Array<String>) {
-	runApplication<AuthApplication>(*args)
+	runApplication<BentleyApplication>(*args)
 }

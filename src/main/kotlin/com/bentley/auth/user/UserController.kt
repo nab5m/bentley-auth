@@ -1,15 +1,6 @@
-package com.bentley.auth.controller
+package com.bentley.auth.user
 
-import com.bentley.auth.core.JwtService
-import com.bentley.auth.user.OAuth2ClientService
-import com.bentley.auth.user.RefreshToken
-import com.bentley.auth.user.RefreshTokenService
-import com.bentley.auth.user.SocialUser
-import com.bentley.auth.user.SocialUserService
-import com.bentley.auth.user.User
-import com.bentley.auth.user.UserService
-import com.bentley.auth.user.UserVerificationMailService
-import com.bentley.auth.user.UserVerificationService
+import com.bentley.auth.JwtService
 import io.swagger.v3.oas.annotations.Operation
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
@@ -25,7 +16,6 @@ import org.springframework.web.server.ResponseStatusException
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneId
-
 
 @RestController
 class UserController(

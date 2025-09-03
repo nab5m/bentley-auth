@@ -1,6 +1,6 @@
 package com.bentley.auth.user
 
-import com.bentley.auth.core.NotFoundException
+import com.bentley.core.NotFoundException
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
 

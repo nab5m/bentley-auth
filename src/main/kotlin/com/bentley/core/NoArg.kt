@@ -1,4 +1,4 @@
-package com.bentley.auth.core
+package com.bentley.core
 
 @Target(AnnotationTarget.CLASS)
 @Retention(AnnotationRetention.RUNTIME)

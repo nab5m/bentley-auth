@@ -1,6 +1,6 @@
 package com.bentley.auth.user
 
-import com.bentley.auth.core.Entity
+import com.bentley.core.Entity
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonProperty
 import jakarta.validation.constraints.Email

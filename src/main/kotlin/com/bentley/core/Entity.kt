@@ -1,4 +1,4 @@
-package com.bentley.auth.core
+package com.bentley.core
 
 import com.fasterxml.jackson.annotation.JsonIgnore
 import java.io.Serializable

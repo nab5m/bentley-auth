@@ -1,7 +1,8 @@
-package com.bentley.auth.controller
+package com.bentley.controller
 
-import com.bentley.auth.core.JwtService
+import com.bentley.auth.JwtService
 import com.bentley.auth.user.*
+import com.bentley.auth.user.UserController
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.doReturn
 import org.springframework.beans.factory.annotation.Autowired

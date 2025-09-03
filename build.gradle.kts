@@ -17,7 +17,7 @@ configurations {
 }
 
 noArg {
-	annotation("com.bentley.auth.core.NoArg")
+	annotation("com.bentley.core.NoArg")
 }
 
 group = "com.bentley"

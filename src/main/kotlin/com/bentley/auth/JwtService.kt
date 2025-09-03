@@ -1,4 +1,4 @@
-package com.bentley.auth.core
+package com.bentley.auth
 
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm

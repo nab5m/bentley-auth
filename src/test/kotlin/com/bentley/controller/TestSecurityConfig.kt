@@ -1,4 +1,4 @@
-package com.bentley.auth.controller
+package com.bentley.controller
 
 import org.springframework.boot.test.context.TestConfiguration
 import org.springframework.context.annotation.Bean

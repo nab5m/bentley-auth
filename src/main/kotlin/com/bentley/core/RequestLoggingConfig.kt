@@ -1,4 +1,4 @@
-package com.bentley.auth.core
+package com.bentley.core
 
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration

@@ -1,6 +1,6 @@
 package com.bentley.auth.user
 
-import com.bentley.auth.core.Entity
+import com.bentley.core.Entity
 
 data class SocialUser(
     val userId: Long,
