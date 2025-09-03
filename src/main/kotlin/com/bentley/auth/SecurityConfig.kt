@@ -28,13 +28,12 @@ class SecurityConfig {
             }
             authorizeHttpRequests {
                 authorize(HttpMethod.POST, "/v1/user", permitAll)
-                authorize("/v1/login", permitAll)
+                authorize("/v1/user/login", permitAll)
                 authorize("/v1/refresh-token", permitAll)
-                authorize("/v1/logout", permitAll)
                 authorize("/v1/user/resend-email-verification", permitAll)
                 authorize("/v1/user/verify-email", permitAll)
                 authorize("/v1/user/update-password", permitAll)
-                authorize("/v1/oauth2/{registrationId}/login", permitAll)
+                authorize("/v1/user/oauth2/{registrationId}/login", permitAll)
                 authorize("/swagger-ui/**", permitAll)
                 authorize("/v3/api-docs/**", permitAll)
                 authorize("/error", permitAll)
@@ -43,7 +42,8 @@ class SecurityConfig {
             oauth2Login {
 
             }
-            addFilterBefore<UsernamePasswordAuthenticationFilter>(JwtAuthenticationFilter(jwtService))
+            addFilterBefore<UsernamePasswordAuthenticationFilter>(HostAuthenticationFilter(jwtService))
+            addFilterBefore<UsernamePasswordAuthenticationFilter>(UserAuthenticationFilter(jwtService))
         }
 
         return http.build()

@@ -49,3 +49,16 @@ CREATE TABLE IF NOT EXISTS `socialUser`
     UNIQUE (registrationId, subject),
     FOREIGN KEY (userId) REFERENCES `user` (id)
 );
+
+CREATE TABLE IF NOT EXISTS `host`
+(
+    id            BIGINT       NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    email         VARCHAR(255) NOT NULL,
+    password      VARCHAR(255) NOT NULL,
+    firstName     VARCHAR(255),
+    lastName      VARCHAR(255),
+    status        VARCHAR(40)  NOT NULL,
+    createdAt     DATETIME     NOT NULL,
+    updatedAt     DATETIME     NOT NULL,
+    deactivatedAt DATETIME
+);
