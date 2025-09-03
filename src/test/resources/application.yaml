@@ -18,6 +18,18 @@ spring:
           auth: true
           starttls:
             enable: true
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: AAA
+            client-secret: AAA
+            redirect-uri: http://localhost:8080/v1/oauth2/google/login # authorization code랑 state 확인용
+            scope:
+              - openid
+              - profile
+              - email
 
 jwt:
   public-key: "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEApiZnwNlBNfBqN/T8NGDpvEMgn7m4ZZ9XnwwCsMvhHcBpzEJ4hkQSCD3ahUo5SHZfJzLaY1wf4J3DzG6hqJLR0escibAKJGpVmUkSkfEP5v1Lw9GHJmRmzZ6JGdKD92LCaMAldaxvTY+uC2Swf73pAFDfIqqf+r9GdrClTKulBV87FBqymRSx9hp4u+fCMyvidiAbRaJxtC7YKBHGIcQpIbryBPOQlmKrH0pYSu049JY0L0zyQ8yxTiKzKbMbY7WPcN7FLwj1G64nmSxSqVcCCT1h6TPLV6kThyX1YtCNms2DWoNiEvxPkwjUOTwwnvIFtkCKTa6E6n5JvPzhdlUYhQIDAQAB"

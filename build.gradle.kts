@@ -1,9 +1,19 @@
+import org.asciidoctor.gradle.jvm.AsciidoctorTask
+import org.gradle.kotlin.dsl.named
+
 plugins {
 	kotlin("jvm") version "1.9.25"
 	kotlin("plugin.spring") version "1.9.25"
 	kotlin("plugin.noarg") version "2.2.10"
 	id("org.springframework.boot") version "3.5.5"
 	id("io.spring.dependency-management") version "1.1.7"
+	id("org.asciidoctor.jvm.convert") version "3.3.2"
+}
+
+val asciidoctorExt by configurations.creating
+
+configurations {
+	asciidoctorExt
 }
 
 noArg {
@@ -29,6 +39,7 @@ extra["springModulithVersion"] = "1.4.1"
 dependencyManagement {
 	imports {
 		mavenBom("org.springframework.modulith:spring-modulith-bom:${property("springModulithVersion")}")
+		mavenBom("org.springframework.restdocs:spring-restdocs-bom:3.0.5")
 	}
 }
 
@@ -47,12 +58,14 @@ dependencies {
 	implementation("com.auth0:java-jwt:4.5.0")
 	developmentOnly("org.springframework.boot:spring-boot-devtools")
 	runtimeOnly("com.mysql:mysql-connector-j")
+	asciidoctorExt("org.springframework.restdocs:spring-restdocs-asciidoctor")
 	testRuntimeOnly("com.h2database:h2")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
 	testImplementation("org.mybatis.spring.boot:mybatis-spring-boot-starter-test:3.0.5")
 	testImplementation("org.springframework.modulith:spring-modulith-starter-test")
 	testImplementation("org.springframework.security:spring-security-test")
+	testImplementation("org.springframework.restdocs:spring-restdocs-mockmvc")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
@@ -64,4 +77,23 @@ kotlin {
 
 tasks.withType<Test> {
 	useJUnitPlatform()
+}
+
+val snippetsDir by extra { file("build/generated-snippets") }
+
+tasks.test {
+	outputs.dir(snippetsDir)
+}
+
+tasks.named<AsciidoctorTask>("asciidoctor") {
+	inputs.dir(snippetsDir)
+	configurations(asciidoctorExt.name)
+	dependsOn(tasks.test)
+}
+
+tasks.bootJar {
+	dependsOn(tasks.asciidoctor)
+	from ("${tasks.asciidoctor.get().outputDir}") {
+		into("static/docs")
+	}
 }

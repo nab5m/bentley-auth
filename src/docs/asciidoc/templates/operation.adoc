@@ -1,0 +1,31 @@
+=== {title}
+
+.Request
+include::{snippets}/{op}/http-request.adoc[opts=optional]
+
+.Request headers
+include::{snippets}/{op}/request-headers.adoc[opts=optional]
+
+.Path parameters
+include::{snippets}/{op}/path-parameters.adoc[opts=optional]
+
+.Query parameters
+include::{snippets}/{op}/request-parameters.adoc[opts=optional]
+
+.Request fields
+include::{snippets}/{op}/request-fields.adoc[opts=optional]
+
+.Request body
+include::{snippets}/{op}/request-body.adoc[opts=optional]
+
+.Response
+include::{snippets}/{op}/http-response.adoc[opts=optional]
+
+.Response fields
+include::{snippets}/{op}/response-fields.adoc[opts=optional]
+
+.Response body
+include::{snippets}/{op}/response-body.adoc[opts=optional]
+
+.Links
+include::{snippets}/{op}/links.adoc[opts=optional]

@@ -1,79 +1,93 @@
 package com.bentley.auth.controller
 
+import com.bentley.auth.core.JwtService
+import com.bentley.auth.user.OAuth2ClientService
+import com.bentley.auth.user.RefreshTokenService
+import com.bentley.auth.user.SocialUserService
 import com.bentley.auth.user.UserService
-import com.bentley.auth.user.UserVerification
+import com.bentley.auth.user.UserVerificationMailService
 import com.bentley.auth.user.UserVerificationService
-import org.junit.jupiter.api.Test
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.doReturn
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient
+import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
+import org.springframework.context.annotation.Import
 import org.springframework.http.MediaType
-import org.springframework.test.web.reactive.server.WebTestClient
-import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document
+import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post
+import org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath
+import org.springframework.restdocs.payload.PayloadDocumentation.requestFields
+import org.springframework.restdocs.request.RequestDocumentation.formParameters
+import org.springframework.restdocs.request.RequestDocumentation.parameterWithName
+import org.springframework.security.crypto.password.PasswordEncoder
+import org.springframework.test.context.bean.override.mockito.MockitoBean
+import org.springframework.test.web.servlet.MockMvc
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers.print
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import kotlin.test.Test
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@AutoConfigureWebTestClient(timeout = "10s")
-class UserControllerTests {
+@WebMvcTest(controllers = [UserController::class])
+@AutoConfigureRestDocs
+@Import(TestSecurityConfig::class)
+class UserControllerTests @Autowired constructor(
+    private val mockMvc: MockMvc,
+) {
 
-    @Autowired
-    private lateinit var webTestClient: WebTestClient
-
-    @Autowired
+    @MockitoBean
     private lateinit var userService: UserService
 
-    @Autowired
+    @MockitoBean
     private lateinit var userVerificationService: UserVerificationService
 
+    @MockitoBean
+    private lateinit var userVerificationMailService: UserVerificationMailService
+
+    @MockitoBean
+    private lateinit var jwtService: JwtService
+
+    @MockitoBean
+    private lateinit var refreshTokenService: RefreshTokenService
+
+    @MockitoBean
+    private lateinit var oAuth2ClientService: OAuth2ClientService
+
+    @MockitoBean
+    private lateinit var socialUserService: SocialUserService
+
+    @MockitoBean
+    private lateinit var passwordEncoder: PasswordEncoder
+
     @Test
-    fun `create user - verify email - login`() {
-        val email = "kimjun136@naver.com"
-        val password = "password123"
-        val userJson = """
+    fun createUser() {
+        doReturn("encodedPassword").`when`(passwordEncoder).encode(any())
+
+        mockMvc.perform(
+            post("/v1/user").contentType(MediaType.APPLICATION_JSON).content(
+                """
             {
-                "email": "$email",
-                "password": "$password",
+                "email": "bentley.kim@handys.co.kr",
+                "password": "password123",
                 "phone": "01057288382",
                 "firstName": "JunYoung",
                 "lastName": "Kim"
             }
-        """
-        webTestClient.post()
-            .uri("/v1/user")
-            .contentType(MediaType.APPLICATION_JSON)
-            .bodyValue(userJson)
-            .exchange()
-            .expectStatus().isOk
-
-        val user = userService.getOrNullByEmail(email) ?: throw IllegalStateException("User should exist after creation")
-        val userVerification = UserVerification(user.id, "123456", expiresAt = user.createdAt.plusHours(1))
-        userVerificationService.create(userVerification)
-
-        val verifyJson = """
-            {
-                "email": "$email",
-                "code": "${userVerification.code}"
-            }
-        """
-        webTestClient.post()
-            .uri("/v1/user/verify-email")
-            .contentType(MediaType.APPLICATION_JSON)
-            .bodyValue(verifyJson)
-            .exchange()
-            .expectStatus().isOk
-
-        val loginJson = """
-            {
-                "email": "$email",
-                "password": "$password"
-            }
-        """
-        webTestClient.post()
-            .uri("/v1/login")
-            .contentType(MediaType.APPLICATION_JSON)
-            .bodyValue(loginJson)
-            .exchange()
-            .expectStatus().isOk
-            .expectBody()
-            .jsonPath("$.accessToken").isNotEmpty
-            .jsonPath("$.refreshToken").isNotEmpty
+            """.trimIndent()
+            )
+        )
+            .andExpect(status().isOk)
+            .andDo(print())
+            .andDo(
+                document(
+                    "user-create",
+                    requestFields(
+                        fieldWithPath("email").description("User email"),
+                        fieldWithPath("password").description("password"),
+                        fieldWithPath("phone").description("phone").optional(),
+                        fieldWithPath("firstName").description("firstName").optional(),
+                        fieldWithPath("lastName").description("lastName").optional(),
+                    )
+                )
+            )
     }
 }

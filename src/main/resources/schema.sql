@@ -1,4 +1,4 @@
-CREATE TABLE `user`
+CREATE TABLE IF NOT EXISTS `user`
 (
     id            BIGINT       NOT NULL PRIMARY KEY AUTO_INCREMENT,
     email         VARCHAR(255) NOT NULL,
@@ -14,7 +14,7 @@ CREATE TABLE `user`
     UNIQUE (phone)
 );
 
-CREATE TABLE `userVerification`
+CREATE TABLE IF NOT EXISTS `userVerification`
 (
     id         BIGINT       NOT NULL PRIMARY KEY AUTO_INCREMENT,
     userId     BIGINT       NOT NULL,
@@ -26,7 +26,7 @@ CREATE TABLE `userVerification`
     FOREIGN KEY (userId) REFERENCES `user` (id)
 );
 
-CREATE TABLE `refreshToken`
+CREATE TABLE IF NOT EXISTS `refreshToken`
 (
     id        BIGINT   NOT NULL PRIMARY KEY AUTO_INCREMENT,
     userId    BIGINT   NOT NULL,
@@ -37,7 +37,7 @@ CREATE TABLE `refreshToken`
     FOREIGN KEY (userId) REFERENCES `user` (id)
 );
 
-CREATE TABLE `socialUser`
+CREATE TABLE IF NOT EXISTS `socialUser`
 (
     id             BIGINT       NOT NULL PRIMARY KEY AUTO_INCREMENT,
     userId         BIGINT       NOT NULL,
